@@ -223,6 +223,15 @@ async def txt_handler(bot: Client, m: Message):
         CR = credit
     else:
         CR = raw_text3
+
+    await editable.edit("**Enter Your PW Token For MPD URL or send 'unknown' for use default**")
+    input4: Message = await bot.listen(editable.chat.id)
+    raw_text4 = input4.text
+    await input4.delete(True)
+    if raw_text4 == 'pw':
+        token = pw_token
+    else:
+        token = raw_text0
   
     await editable.edit("Now send the **Thumb url**\n**Eg :** ``\n\nor Send `no`")
     input6 = message = await bot.listen(editable.chat.id)
@@ -271,7 +280,7 @@ async def txt_handler(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              vid_id =  url.split("/")[-2]
-             url =  f"https://madxpw-api-e0913deb3016.herokuapp.com/{vid_id}/master.m3u8?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MzU4MDUzNDYuMTU2LCJkYXRhIjp7Il9pZCI6IjYzNWE5NTljOTZjM2I1MDAxODhjNmYxNyIsInVzZXJuYW1lIjoiOTU5ODU3MzQ3MyIsImZpcnN0TmFtZSI6IkFua2l0IiwibGFzdE5hbWUiOiJTaGFreWEiLCJvcmdhbml6YXRpb24iOnsiX2lkIjoiNWViMzkzZWU5NWZhYjc0NjhhNzlkMTg5Iiwid2Vic2l0ZSI6InBoeXNpY3N3YWxsYWguY29tIiwibmFtZSI6IlBoeXNpY3N3YWxsYWgifSwiZW1haWwiOiJhbmtpdHBhdG5pOTVAZ21haWwuY29tIiwicm9sZXMiOlsiNWIyN2JkOTY1ODQyZjk1MGE3NzhjNmVmIl0sImNvdW50cnlHcm91cCI6IklOIiwidHlwZSI6IlVTRVIifSwiaWF0IjoxNzM1MjAwNTQ2fQ.W3ShXJYTsevdYRdVtU0jBIc_dtlVWL-IJcjetYuSHug"
+             url =  f"https://madxpw-api-e0913deb3016.herokuapp.com/{vid_id}/master.m3u8?token={raw_text4}"
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -314,8 +323,8 @@ async def txt_handler(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'**🎞️ VIDEO ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} {res} @Ankit_Shakya73.mkv\n\n<pre><code>📚 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
-                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} @Ankit_Shakya73.pdf \n\n<pre><code>📚 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
+                cc = f'**🎞️ VID_ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} {res} @Ankit_Shakya73.mkv\n\n<pre><code>📚 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
+                cc1 = f'**📁 PDF_ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} @Ankit_Shakya73.pdf \n\n<pre><code>📚 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
                     
                 
                 if "drive" in url:
@@ -360,14 +369,21 @@ async def txt_handler(bot: Client, m: Message):
 
                     except FloodWait as e:
                         await m.reply_text(str(e))
-                        await asyncio.sleep(2)  # Use asyncio.sleep for non-blocking sleep
-                        return  # Exit the function to avoid continuation
-
-                    except Exception as e:
-                        await m.reply_text(f"An error occurred: {str(e)}")
-                        await asyncio.sleep(4)  # You can replace this with more specific
+                        time.sleep(e.x)
                         continue
-                        
+
+                elif ".pdf" in url:
+                    try:
+                        cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
+                        download_cmd = f"{cmd} -R 25 --fragment-retries 25"
+                        os.system(download_cmd)
+                        copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.pdf', caption=cc1)
+                        count += 1
+                        os.remove(f'{name}.pdf')
+                    except FloodWait as e:
+                        await m.reply_text(str(e))
+                        time.sleep(e.x)
+                        continue                      
                           
                 else:
                     Show = f"❊⟱ 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐢𝐧𝐠 ⟱❊ »\n\n📄 Title:- `{name}\n\n⌨ 𝐐𝐮𝐥𝐢𝐭𝐲 » {raw_text2}`\n\n**🔗 𝐔𝐑𝐋 »** `{url}`\n\n**𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐁𝐲 ✦ ᴀɴᴋɪᴛ sʜᴀᴋʏᴀ"
