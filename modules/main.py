@@ -244,26 +244,15 @@ async def txt_handler(bot: Client, m: Message):
         getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
         thumb = "thumb.jpg"
     else:
-        thumb == "no"    
-    
-    if len(links) == 1:
-        count = 1
-    else:
-        count = int(raw_text)
+        thumb == "no"
 
+    count =int(raw_text)    
     try:
-        # Assuming links is a list of lists and you want to process the second element of each sublist
-        for i in range(len(links)):
-            original_url = links[i][1]
+        for i in range(arg-1, len(links)):
 
             # Replace parts of the URL as needed
-            V = links[i][1].replace("file/d/","uc?export=download&id=")\
-               .replace("www.youtube-nocookie.com/embed", "youtu.be")\
-               .replace("?modestbranding=1", "")\
-               .replace("/view?usp=sharing","")\
-               .replace("youtube.com/embed/", "youtube.com/watch?v=")
-            
-            url = "https://" + V
+            Vxy = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","")
+            url = "https://" + Vxy
 
             if "acecwply" in url:
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
